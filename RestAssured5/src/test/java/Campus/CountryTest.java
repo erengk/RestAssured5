@@ -26,25 +26,23 @@ public class CountryTest {
     public void Setup() {
         baseURI = "https://test.mersys.io";
 
-        Map<String,String > userCredential = new HashMap<>();
+        Map<String, String> userCredential = new HashMap<>();
         userCredential.put("username", "turkeyts");
         userCredential.put("password", "TechnoStudy123");
         userCredential.put("rememberMe", "true");
 
         Cookies cookies =
-        given()
-                .contentType(ContentType.JSON)
-                .body(userCredential)
+                given()
+                        .contentType(ContentType.JSON)
+                        .body(userCredential)
 
-                .when()
-                .post("/auth/login")
+                        .when()
+                        .post("/auth/login")
 
-                .then()
-                //.log().all()
-                .statusCode(200)
-                .extract().response().getDetailedCookies()
-
-                ;
+                        .then()
+                        //.log().all()
+                        .statusCode(200)
+                        .extract().response().getDetailedCookies();
 
         recSpec = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
@@ -56,23 +54,23 @@ public class CountryTest {
     public void createCountry() {
 
         Map<String, String> country = new HashMap<>();
-        countryName = faker.address().country()+faker.number().digits(5);
-        country.put("name",countryName);
-        country.put("code",faker.address().countryCode()+faker.number().digits(5));
+        countryName = faker.address().country() + faker.number().digits(5);
+        country.put("name", countryName);
+        country.put("code", faker.address().countryCode() + faker.number().digits(5));
 
-countryID =
-        given()
-                .spec(recSpec)
-                .body(country)
-                .log().body()
+        countryID =
+                given()
+                        .spec(recSpec)
+                        .body(country)
+                        .log().body()
 
-                .when()
-                .post("/school-service/api/countries")
+                        .when()
+                        .post("/school-service/api/countries")
 
-                .then()
-                .log().body()
-                .statusCode(201)
-                .extract().path("id")
+                        .then()
+                        .log().body()
+                        .statusCode(201)
+                        .extract().path("id")
         ;
         System.out.println("countryID = " + countryID);
     }
@@ -81,8 +79,8 @@ countryID =
     public void createCountryNegative() {
 
         Map<String, String> country = new HashMap<>();
-        country.put("name",countryName);
-        country.put("code",faker.address().countryCode()+faker.number().digits(5));
+        country.put("name", countryName);
+        country.put("code", faker.address().countryCode() + faker.number().digits(5));
 
         given()
                 .spec(recSpec)
@@ -97,18 +95,18 @@ countryID =
                 .statusCode(400)
                 .body("message", containsString("already"))
 
-                ;
+        ;
     }
 
     @Test(dependsOnMethods = "createCountryNegative")
-    public void updateCountry()  {
+    public void updateCountry() {
 
-        Map<String,String> country=new HashMap<>();
-        country.put("id",countryID);
+        Map<String, String> country = new HashMap<>();
+        country.put("id", countryID);
 
-        countryName="ismet ülkesi"+faker.number().digits(7);
-        country.put("name",countryName);
-        country.put("code",faker.address().countryCode()+faker.number().digits(5));
+        countryName = "gökhan ülkesi" + faker.number().digits(7);
+        country.put("name", countryName);
+        country.put("code", faker.address().countryCode() + faker.number().digits(5));
 
         given()
                 .spec(recSpec)
@@ -126,7 +124,7 @@ countryID =
     }
 
     @Test(dependsOnMethods = "updateCountry")
-    public void deleteCountry()  {
+    public void deleteCountry() {
 
         given()
                 .spec(recSpec)
@@ -144,7 +142,7 @@ countryID =
     }
 
     @Test(dependsOnMethods = "deleteCountry")
-    public void deleteCountryNegative()  {
+    public void deleteCountryNegative() {
 
         given()
                 .spec(recSpec)
@@ -156,8 +154,8 @@ countryID =
 
                 .then()
                 .log().body() // gelen body yi log olarak göster
-                .statusCode(400)
-                .body("message",equalTo("Country not found"))
+                .statusCode(500) // jenkins için hatalı test için 500 yapıldı normalde 400
+                .body("message", equalTo("Country not found"))
         ;
 
     }
