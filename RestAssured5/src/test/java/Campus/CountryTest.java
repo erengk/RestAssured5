@@ -154,7 +154,7 @@ public class CountryTest {
 
                 .then()
                 .log().body() // gelen body yi log olarak göster
-                .statusCode(500) // jenkins için hatalı test için 500 yapıldı normalde 400
+                .statusCode(400) // jenkins için hatalı test için 500 yapıldı normalde 400
                 .body("message", equalTo("Country not found"))
         ;
 
